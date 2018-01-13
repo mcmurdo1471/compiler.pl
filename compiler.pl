@@ -25,29 +25,34 @@ my %tokens = (
 
 sub statement {
 	my @args = @_;
-	...
+#	...
 	# Makes a statement thing
+	return @args;
+}
+
+sub fail {
+	say "FAIL: " . shift;
 }
 
 sub parse_statement {
 	my @tokens = @_;
 	my @args;
-	for $token (@tokens) {
-		if($token != "RETURN_KEYWORD") {
+	for my $token (@tokens) {
+		if($token ne "RETURN_KEYWORD") {
 			fail "Missing return in statement";
 			return;
 		}
 		push @args, $token;
 		next;
-		if($token != "INT_KEYWORD") {
+		if($token ne "INT_KEYWORD") {
 			fail "Missing INT for return";
 			return;
 		}
 		push @args, $token;
 		next;
-		if($token != "SEMICOLON") {
+		if($token ne "SEMICOLON") {
 			fail "Missing semi-colon closing return statement";
-			return
+			return;
 		}
 		push @args, $token;
 		return statement(@args); 
@@ -58,6 +63,7 @@ sub get_next_token {
 	my $line = shift;
 	my $token = 'unknown';
 
+# TODO "return" matched by RETURN_KEYWORD _and_ IDENTIFIER...
 	foreach my $key (keys %tokens) {
 		my $re = '^\s*' . $tokens{$key};
 		if($line =~ /($re)/) {
@@ -67,7 +73,6 @@ sub get_next_token {
 	return ('^\S+\s', 'unknown');	
 }
 
-	#p %tokens;
 sub tokenise_file {
 	# Get file content
 	my $file = shift;
@@ -91,6 +96,8 @@ sub tokenise_file {
 	return @token_list;
 }
 
-my @token_list = tokenise_file './program.c';
+my @token_list = tokenise_file '../write_a_c_compiler/stage_1/valid/return_2.c';
 p @token_list;
 # TODO I bet @token_list has to be a hash
+my @foo = parse_statement(@token_list);
+p @foo;
