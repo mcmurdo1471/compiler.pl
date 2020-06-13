@@ -1,2 +1,3 @@
 # compiler.pl
 diffme
+dontme
